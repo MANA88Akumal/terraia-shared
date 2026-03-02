@@ -7,10 +7,25 @@
     ".": "./src/index.js",
     "./theme/tenant-vars.css": "./src/theme/tenant-vars.css"
   },
+  "scripts": {
+    "test:e2e": "npx playwright test --config=e2e/playwright.config.ts",
+    "test:e2e:portal": "npx playwright test --config=e2e/playwright.config.ts --project=portal",
+    "test:e2e:accounting": "npx playwright test --config=e2e/playwright.config.ts --project=accounting",
+    "test:e2e:cms": "npx playwright test --config=e2e/playwright.config.ts --project=cms",
+    "test:e2e:cross-app": "npx playwright test --config=e2e/playwright.config.ts --project=cross-app",
+    "test:e2e:setup": "npx tsx e2e/setup-test-users.ts",
+    "test:e2e:report": "npx playwright show-report e2e/playwright-report"
+  },
   "peerDependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.0",
-    "@supabase/supabase-js": "^2.39.0"
+    "react-router-dom": "^6.21.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@supabase/supabase-js": "^2.98.0",
+    "dotenv": "^17.3.1",
+    "tsx": "^4.21.0"
   }
 }
