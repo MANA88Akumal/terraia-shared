@@ -3,12 +3,18 @@ import { useAuth } from './useAuth.js'
 
 export const TenantContext = createContext(null)
 
+function detectDomain() {
+  const hostname = window.location.hostname
+  if (hostname.endsWith('.terraia.io') || hostname === 'terraia.io') return 'terraia.io'
+  return 'manaakumal.com'
+}
+
 const DEFAULT_TENANT = {
   id: null,
   slug: 'mana88',
   name: 'MANA 88 Akumal',
-  domain: 'manaakumal.com',
-  logo_url: 'https://manaakumal.com/wp-content/uploads/2025/06/logo-white-simple.png',
+  domain: detectDomain(),
+  logo_url: 'https://login.terraia.io/logo-dark.png',
   brand_primary: '#ce9e62',
   brand_secondary: '#2c2c2c',
   brand_accent: '#c1432e',

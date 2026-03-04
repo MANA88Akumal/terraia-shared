@@ -2,10 +2,17 @@ import { useState, useEffect, useRef } from 'react'
 import { palette } from '../theme/tokens.js'
 import { icons } from './icons.jsx'
 
+function getAppDomain() {
+  const hostname = window.location.hostname
+  if (hostname.endsWith('.terraia.io') || hostname === 'terraia.io') return 'terraia.io'
+  return 'manaakumal.com'
+}
+
+const domain = getAppDomain()
 const APPS = [
-  { id: 'accounting', name: 'Accounting', url: 'https://accounting.manaakumal.com', icon: icons.appAccounting },
-  { id: 'cms', name: 'Client Management', url: 'https://cms.manaakumal.com', icon: icons.appCms },
-  { id: 'investors', name: 'Investor Portal', url: 'https://investors.manaakumal.com', icon: icons.appInvestors },
+  { id: 'accounting', name: 'Accounting', url: `https://accounting.${domain}`, icon: icons.appAccounting },
+  { id: 'cms', name: 'Client Management', url: `https://cms.${domain}`, icon: icons.appCms },
+  { id: 'investors', name: 'Investor Portal', url: `https://investors.${domain}`, icon: icons.appInvestors },
 ]
 
 /**
@@ -43,7 +50,7 @@ export function AppSwitcher({ currentAppId, appAccess }) {
       >
         <span style={{ color: palette.gold }}>{icons.appSwitcher}</span>
         {currentApp && (
-          <span className="text-[0.75rem] font-semibold">{currentApp.name}</span>
+          <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{currentApp.name}</span>
         )}
         <span style={{ color: '#a0a0a0', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
           {icons.chevron}
@@ -76,9 +83,9 @@ export function AppSwitcher({ currentAppId, appAccess }) {
                 onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.background = '#fff' }}
               >
                 <span style={{ color: isCurrent ? palette.gold : '#a0a0a0' }}>{app.icon}</span>
-                <span className="text-[0.75rem] font-medium">{app.name}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>{app.name}</span>
                 {isCurrent && (
-                  <span className="ml-auto text-[0.6rem] font-semibold uppercase tracking-wider" style={{ color: palette.gold }}>Current</span>
+                  <span style={{ marginLeft: 'auto', fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: palette.gold }}>Current</span>
                 )}
               </button>
             )

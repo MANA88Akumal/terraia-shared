@@ -57,7 +57,7 @@ export function Sidebar({
     >
       {/* Logo */}
       <div className="flex items-center justify-center" style={{ height: 56, borderBottom: '1px solid rgba(206,158,98,0.1)' }}>
-        <img src={LOGO_URL} alt="MANA 88" className={`${open ? 'h-8' : 'h-6'} opacity-90`} />
+        <img src={LOGO_URL} alt="TerraIA" style={{ height: open ? '2rem' : '1.5rem', opacity: 0.9 }} />
       </div>
 
       {/* Navigation */}
@@ -79,8 +79,7 @@ export function Sidebar({
                   onMouseEnter={e => { e.currentTarget.style.background = 'rgba(206,158,98,0.06)' }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
                 >
-                  <span className="text-[0.58rem] font-semibold uppercase tracking-[0.12em]"
-                    style={{ color: hasActiveChild ? palette.gold : 'rgba(255,255,255,0.25)' }}>
+                  <span style={{ fontSize: '0.58rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', color: hasActiveChild ? palette.gold : 'rgba(255,255,255,0.25)' }}>
                     {section.heading}
                   </span>
                   <span className="transition-transform duration-200" style={{
@@ -132,11 +131,11 @@ export function Sidebar({
                       {item.icon}
                     </span>
                     {open && (
-                      <span className="text-[0.72rem] font-medium truncate flex-1">{item.label}</span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{item.label}</span>
                     )}
                     {open && item.badge != null && item.badge > 0 && (
-                      <span className="ml-auto text-white text-[0.6rem] font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                        style={{ background: palette.red }}>
+                      <span className="rounded-full flex items-center justify-center"
+                        style={{ marginLeft: 'auto', color: '#fff', fontSize: '0.6rem', fontWeight: 700, width: '1.25rem', height: '1.25rem', background: palette.red }}>
                         {item.badge > 9 ? '9+' : item.badge}
                       </span>
                     )}
@@ -179,7 +178,7 @@ export function Sidebar({
           <span className="flex-shrink-0 flex items-center justify-center" style={{ width: 20, height: 20, transform: open ? 'none' : 'rotate(180deg)', transition: 'transform 0.2s' }}>
             {icons.collapse}
           </span>
-          {open && <span className="text-[0.67rem] font-medium">Collapse</span>}
+          {open && <span style={{ fontSize: '0.67rem', fontWeight: 500 }}>Collapse</span>}
         </button>
 
         {/* Language toggle */}

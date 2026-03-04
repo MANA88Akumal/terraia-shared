@@ -27,4 +27,5 @@ export function getRuntimePalette() {
   }
 }
 
-export const LOGO_URL = 'https://manaakumal.com/wp-content/uploads/2025/06/logo-white-simple.png'
+export const LOGO_URL = 'https://login.terraia.io/logo-dark.png'
+export const LOGO_LIGHT_URL = 'https://login.terraia.io/logo-light.png'
