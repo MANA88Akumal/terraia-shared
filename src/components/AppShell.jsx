@@ -28,7 +28,7 @@ import { TopBar } from './TopBar.jsx'
  * @param {string} props.appSubtitle - Shown below MANA 88 in sidebar
  * @param {Array} props.navSections - Navigation config
  * @param {object} [props.notification] - Notification bell config
- * @param {object} [props.i18n] - { locale, onToggle }
+ * @param {object} [props.i18n] - { locale, setLocale }
  * @param {string} [props.userEmail]
  * @param {function} [props.onSignOut]
  * @param {string[]} [props.appAccess] - Allowed apps for AppSwitcher

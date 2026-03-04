@@ -186,6 +186,7 @@ export function Sidebar({
         {i18n && (
           <LanguageToggle
             locale={i18n.locale}
+            setLocale={i18n.setLocale}
             onToggle={i18n.onToggle}
             sidebarOpen={open}
           />
