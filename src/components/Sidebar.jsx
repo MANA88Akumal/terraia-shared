@@ -56,15 +56,8 @@ export function Sidebar({
       }}
     >
       {/* Logo */}
-      <div className="flex flex-col items-center justify-center px-2" style={{ height: open ? 72 : 56, borderBottom: '1px solid rgba(206,158,98,0.1)' }}>
-        {open ? (
-          <>
-            <img src={LOGO_URL} alt="MANA 88" className="h-8 opacity-90" />
-            <div className="text-[0.6rem] font-medium uppercase tracking-[0.15em] mt-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{appSubtitle}</div>
-          </>
-        ) : (
-          <img src={LOGO_URL} alt="M" className="h-6 opacity-80" />
-        )}
+      <div className="flex items-center justify-center" style={{ height: 56, borderBottom: '1px solid rgba(206,158,98,0.1)' }}>
+        <img src={LOGO_URL} alt="MANA 88" className={`${open ? 'h-8' : 'h-6'} opacity-90`} />
       </div>
 
       {/* Navigation */}
