@@ -13,6 +13,8 @@ export { AuthProvider, AuthContext } from './auth/AuthProvider.jsx'
 export { useAuth } from './auth/useAuth.js'
 export { TenantProvider, TenantContext } from './auth/TenantProvider.jsx'
 export { useTenant } from './auth/useTenant.js'
+export { OrgProvider, OrgContext } from './auth/OrgProvider.jsx'
+export { useOrganization } from './auth/useOrganization.js'
 export { ProtectedRoute, AdminRoute, StaffRoute, PublicRoute } from './auth/ProtectedRoute.jsx'
 export {
   getSupabaseClient,
