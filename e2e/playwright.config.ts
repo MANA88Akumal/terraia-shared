@@ -62,6 +62,13 @@ export default defineConfig({
       },
     },
     {
+      name: 'ai-engine',
+      testMatch: ['ai-engine.spec.ts'],
+      use: {
+        baseURL: 'https://login.terraia.io',
+      },
+    },
+    {
       name: 'cross-app',
       testMatch: ['cross-app-sso.spec.ts', 'app-switcher.spec.ts'],
     },
