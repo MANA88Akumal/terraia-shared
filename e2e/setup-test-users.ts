@@ -91,8 +91,8 @@ async function setup() {
       console.log(`  Profile upserted (role: ${user.role}, approved: ${user.approved})`);
     }
 
-    // Upsert user_roles (if tenant exists)
-    if (tenantId) {
+    // Upsert user_roles (if tenant exists and user should have org membership)
+    if (tenantId && !(user as any).skipOrgMembership) {
       const appAccess =
         user.role === 'admin'
           ? ['accounting', 'cms', 'investors']

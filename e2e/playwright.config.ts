@@ -55,6 +55,13 @@ export default defineConfig({
       },
     },
     {
+      name: 'onboarding',
+      testMatch: ['onboarding.spec.ts'],
+      use: {
+        baseURL: 'https://login.terraia.io',
+      },
+    },
+    {
       name: 'cross-app',
       testMatch: ['cross-app-sso.spec.ts', 'app-switcher.spec.ts'],
     },

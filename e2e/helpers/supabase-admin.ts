@@ -35,6 +35,14 @@ export function getTestUsers() {
       approved: false,
       full_name: 'E2E Unapproved',
     },
+    onboard: {
+      email: 'e2e-onboard@manaakumal.com',
+      password: pw,
+      role: 'admin' as const,
+      approved: true,
+      full_name: 'E2E Onboard',
+      skipOrgMembership: true,
+    },
   };
 }
 
@@ -43,6 +51,7 @@ export const TEST_USERS = {
   admin: { email: 'e2e-admin@manaakumal.com', role: 'admin' },
   investor: { email: 'e2e-investor@manaakumal.com', role: 'investor' },
   unapproved: { email: 'e2e-unapproved@manaakumal.com', role: 'investor' },
+  onboard: { email: 'e2e-onboard@manaakumal.com', role: 'admin' },
 } as const;
 
 export type TestUserKey = keyof typeof TEST_USERS;

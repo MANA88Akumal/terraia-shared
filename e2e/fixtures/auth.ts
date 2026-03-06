@@ -9,6 +9,8 @@ type AuthFixtures = {
   investorPage: Page;
   /** Page with unapproved user session cookie injected. */
   unapprovedPage: Page;
+  /** Page with onboard user session cookie injected (no org membership). */
+  onboardPage: Page;
   /** Inject a session cookie for any test user into the current context. */
   loginAs: (userKey: TestUserKey) => Promise<void>;
 };
@@ -26,6 +28,11 @@ export const test = base.extend<AuthFixtures>({
 
   unapprovedPage: async ({ page, context }, use) => {
     await injectSessionCookie(context, 'unapproved');
+    await use(page);
+  },
+
+  onboardPage: async ({ page, context }, use) => {
+    await injectSessionCookie(context, 'onboard');
     await use(page);
   },
 
