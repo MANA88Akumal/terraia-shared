@@ -800,6 +800,12 @@ test.describe('9. Full Onboarding → AI Analysis', () => {
   });
 
   test('9.1 Complete onboarding with proforma → AI analysis → health report', async ({ loginPage: page }) => {
+    // Aggressively clean user_roles to avoid unique constraint violation on org creation
+    const admin = getAdminClient();
+    await admin.from('user_roles').delete().eq('user_id', ONBOARD_USER_ID);
+    // Also clean any stale organization_members
+    await admin.from('organization_members').delete().eq('user_id', ONBOARD_USER_ID);
+
     // Clear stale onboarding state
     await page.goto('/onboarding');
     await page.evaluate(() => localStorage.removeItem('terraia_onboarding'));
@@ -1011,10 +1017,10 @@ test.describe('9. Full Onboarding → AI Analysis', () => {
     }
 
     // ── DB VERIFICATION ──────────────────────────────────────────────────
-    const admin = getAdminClient();
+    const dbAdmin = getAdminClient();
 
     // ── 9.13: analysis_runs has a completed run ──────────────────────────
-    const { data: runs } = await admin
+    const { data: runs } = await dbAdmin
       .from('analysis_runs')
       .select('status, findings_count, engines_run')
       .eq('org_id', testOrgId!)
@@ -1030,7 +1036,7 @@ test.describe('9. Full Onboarding → AI Analysis', () => {
     }
 
     // ── 9.14: project_findings from all 3 engines ────────────────────────
-    const { data: findings } = await admin
+    const { data: findings } = await dbAdmin
       .from('project_findings')
       .select('engine, severity, rule_id, title')
       .eq('org_id', testOrgId!);
@@ -1047,7 +1053,7 @@ test.describe('9. Full Onboarding → AI Analysis', () => {
     }
 
     // ── 9.15: benchmark_store has contribution ───────────────────────────
-    const { data: benchmarks } = await admin
+    const { data: benchmarks } = await dbAdmin
       .from('benchmark_store')
       .select('project_type, country, quality_score, created_at')
       .gte('created_at', testStartTime)
