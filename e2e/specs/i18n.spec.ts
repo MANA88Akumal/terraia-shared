@@ -9,8 +9,8 @@ test.describe('Language Toggle (i18n)', () => {
     // Capture the initial page text
     const initialText = await page.locator('nav').textContent();
 
-    // Find the language toggle button (shows flag emoji: US or MX)
-    const langToggle = page.locator('button', { hasText: /🇺🇸|🇲🇽/ });
+    // Find the language toggle button (shows a flag emoji)
+    const langToggle = page.locator('button', { hasText: /🇺🇸|🇲🇽|🇧🇷/ }).first();
     await expect(langToggle).toBeVisible({ timeout: 5_000 });
 
     // Click to toggle language
@@ -29,8 +29,8 @@ test.describe('Language Toggle (i18n)', () => {
 
     const initialText = await page.locator('nav').textContent();
 
-    // Toggle language twice
-    const langToggle = page.locator('button', { hasText: /🇺🇸|🇲🇽/ });
+    // Toggle language (3-way cycle: es→en→pt→es)
+    const langToggle = page.locator('button', { hasText: /🇺🇸|🇲🇽|🇧🇷/ }).first();
     await expect(langToggle).toBeVisible({ timeout: 5_000 });
 
     await langToggle.click();
@@ -39,6 +39,9 @@ test.describe('Language Toggle (i18n)', () => {
     const midText = await page.locator('nav').textContent();
     expect(midText).not.toBe(initialText);
 
+    // Click twice more to cycle back (en→pt→es)
+    await langToggle.click();
+    await page.waitForTimeout(500);
     await langToggle.click();
     await page.waitForTimeout(500);
 
