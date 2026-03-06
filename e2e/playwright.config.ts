@@ -49,7 +49,7 @@ export default defineConfig({
     },
     {
       name: 'login',
-      testMatch: ['auth.spec.ts', 'i18n.spec.ts', 'sign-out.spec.ts'],
+      testMatch: ['login-portal.spec.ts'],
       use: {
         baseURL: 'https://login.terraia.io',
       },
