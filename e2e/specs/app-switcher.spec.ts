@@ -2,7 +2,7 @@ import { test, expect } from '../fixtures/auth';
 
 test.describe('App Switcher', () => {
   test('app switcher dropdown shows all 3 apps', async ({ authenticatedPage: page }) => {
-    await page.goto('https://investors.manaakumal.com/dashboard');
+    await page.goto('https://investors.terraia.io/dashboard');
     await expect(page.locator('nav')).toBeVisible({ timeout: 15_000 });
 
     // The app switcher button contains the current app name
@@ -21,7 +21,7 @@ test.describe('App Switcher', () => {
   });
 
   test('current app is marked', async ({ authenticatedPage: page }) => {
-    await page.goto('https://investors.manaakumal.com/dashboard');
+    await page.goto('https://investors.terraia.io/dashboard');
     await expect(page.locator('nav')).toBeVisible({ timeout: 15_000 });
 
     const appSwitcherBtn = page.locator('button', { hasText: 'Investor Portal' });
@@ -38,7 +38,7 @@ test.describe('App Switcher', () => {
   test('clicking another app navigates with session intact', async ({
     authenticatedPage: page,
   }) => {
-    await page.goto('https://investors.manaakumal.com/dashboard');
+    await page.goto('https://investors.terraia.io/dashboard');
     await expect(page.locator('nav')).toBeVisible({ timeout: 15_000 });
 
     const appSwitcherBtn = page.locator('button', { hasText: 'Investor Portal' });
@@ -53,9 +53,9 @@ test.describe('App Switcher', () => {
     await accountingBtn.click();
 
     // Should navigate to accounting app
-    await page.waitForURL(/accounting\.manaakumal\.com/, { timeout: 15_000 });
-    expect(page.url()).toContain('accounting.manaakumal.com');
-    expect(page.url()).not.toContain('login.manaakumal.com');
+    await page.waitForURL(/accounting\.terraia\.io/, { timeout: 15_000 });
+    expect(page.url()).toContain('accounting.terraia.io');
+    expect(page.url()).not.toContain('login.terraia.io');
 
     // Session should be intact — nav should render
     await expect(page.locator('nav')).toBeVisible({ timeout: 15_000 });

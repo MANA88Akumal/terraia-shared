@@ -30,28 +30,28 @@ export default defineConfig({
       name: 'portal',
       testMatch: ['auth.spec.ts', 'role-access.spec.ts', 'rls-isolation.spec.ts', 'portal-dashboard.spec.ts', 'sign-out.spec.ts', 'i18n.spec.ts'],
       use: {
-        baseURL: 'https://investors.manaakumal.com',
+        baseURL: 'https://investors.terraia.io',
       },
     },
     {
       name: 'accounting',
       testMatch: ['accounting-dashboard.spec.ts'],
       use: {
-        baseURL: 'https://accounting.manaakumal.com',
+        baseURL: 'https://accounting.terraia.io',
       },
     },
     {
       name: 'cms',
       testMatch: ['cms-dashboard.spec.ts'],
       use: {
-        baseURL: 'https://cms.manaakumal.com',
+        baseURL: 'https://cms.terraia.io',
       },
     },
     {
       name: 'login',
       testMatch: ['auth.spec.ts', 'i18n.spec.ts', 'sign-out.spec.ts'],
       use: {
-        baseURL: 'https://login.manaakumal.com',
+        baseURL: 'https://login.terraia.io',
       },
     },
     {

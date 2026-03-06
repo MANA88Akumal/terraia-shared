@@ -18,8 +18,8 @@ test.describe('Sign Out', () => {
     await signOutBtn.click();
 
     // Should redirect to login portal
-    await page.waitForURL(/login\.manaakumal\.com/, { timeout: 15_000 });
-    expect(page.url()).toContain('login.manaakumal.com');
+    await page.waitForURL(/login\.terraia\.io/, { timeout: 15_000 });
+    expect(page.url()).toContain('login.terraia.io');
   });
 
   test('after sign out, visiting any app redirects to login', async ({
@@ -33,11 +33,11 @@ test.describe('Sign Out', () => {
     const signOutBtn = page.locator('button', { hasText: /sign.?out|cerrar.?sesi/i });
     await expect(signOutBtn).toBeVisible({ timeout: 5_000 });
     await signOutBtn.click();
-    await page.waitForURL(/login\.manaakumal\.com/, { timeout: 15_000 });
+    await page.waitForURL(/login\.terraia\.io/, { timeout: 15_000 });
 
     // Now try to visit another app — should redirect to login
-    await page.goto('https://accounting.manaakumal.com/');
-    await page.waitForURL(/login\.manaakumal\.com/, { timeout: 15_000 });
-    expect(page.url()).toContain('login.manaakumal.com');
+    await page.goto('https://accounting.terraia.io/');
+    await page.waitForURL(/login\.terraia\.io/, { timeout: 15_000 });
+    expect(page.url()).toContain('login.terraia.io');
   });
 });

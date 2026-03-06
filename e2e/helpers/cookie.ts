@@ -2,7 +2,7 @@ import type { BrowserContext } from '@playwright/test';
 import { createTestSession, type TestUserKey } from './supabase-admin';
 
 const COOKIE_NAME = 'mana88_session';
-const COOKIE_DOMAIN = '.manaakumal.com';
+const COOKIE_DOMAIN = '.terraia.io';
 
 /**
  * Create a test session and inject it as the mana88_session cookie.

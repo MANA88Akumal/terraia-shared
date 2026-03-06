@@ -15,21 +15,21 @@ export function getTestUsers() {
   const pw = getEnv().testPassword;
   return {
     admin: {
-      email: 'e2e-admin@manaakumal.com',
+      email: 'e2e-admin@terraia.io',
       password: pw,
       role: 'admin' as const,
       approved: true,
       full_name: 'E2E Admin',
     },
     investor: {
-      email: 'e2e-investor@manaakumal.com',
+      email: 'e2e-investor@terraia.io',
       password: pw,
       role: 'investor' as const,
       approved: true,
       full_name: 'E2E Investor',
     },
     unapproved: {
-      email: 'e2e-unapproved@manaakumal.com',
+      email: 'e2e-unapproved@terraia.io',
       password: pw,
       role: 'investor' as const,
       approved: false,
@@ -40,9 +40,9 @@ export function getTestUsers() {
 
 // Keep a static version for type inference
 export const TEST_USERS = {
-  admin: { email: 'e2e-admin@manaakumal.com', role: 'admin' },
-  investor: { email: 'e2e-investor@manaakumal.com', role: 'investor' },
-  unapproved: { email: 'e2e-unapproved@manaakumal.com', role: 'investor' },
+  admin: { email: 'e2e-admin@terraia.io', role: 'admin' },
+  investor: { email: 'e2e-investor@terraia.io', role: 'investor' },
+  unapproved: { email: 'e2e-unapproved@terraia.io', role: 'investor' },
 } as const;
 
 export type TestUserKey = keyof typeof TEST_USERS;

@@ -6,15 +6,15 @@ test.describe('Auth Chain', () => {
     // Should not be stuck on loading — dashboard content should appear
     await expect(page.locator('nav')).toBeVisible({ timeout: 15_000 });
     // Should see dashboard content, not a redirect to login
-    await expect(page).not.toHaveURL(/login\.manaakumal\.com/);
+    await expect(page).not.toHaveURL(/login\.terraia\.io/);
   });
 
   test('unauthenticated user redirects to login portal', async ({ page }) => {
     // No cookie injected — navigate directly
-    await page.goto('https://investors.manaakumal.com/dashboard');
-    // AuthProvider should redirect to login.manaakumal.com
-    await page.waitForURL(/login\.manaakumal\.com/, { timeout: 15_000 });
-    expect(page.url()).toContain('login.manaakumal.com');
+    await page.goto('https://investors.terraia.io/dashboard');
+    // AuthProvider should redirect to login.terraia.io
+    await page.waitForURL(/login\.terraia\.io/, { timeout: 15_000 });
+    expect(page.url()).toContain('login.terraia.io');
   });
 
   test('unapproved user sees pending-approval', async ({ unapprovedPage: page }) => {
