@@ -9,9 +9,9 @@ test.describe('Language Toggle (i18n)', () => {
     // Capture the initial nav text
     const initialText = await page.locator('nav').textContent();
 
-    // The LanguageToggle is a dropdown: click trigger to open, then pick a language
+    // The LanguageToggle is a dropdown inside the sidebar footer (outside <nav>)
     // The trigger button contains the current flag emoji
-    const langTrigger = page.locator('nav button', { hasText: /🇺🇸|🇲🇽|🇧🇷/ }).first();
+    const langTrigger = page.locator('aside button', { hasText: /🇺🇸|🇲🇽|🇧🇷/ }).first();
     await expect(langTrigger).toBeVisible({ timeout: 5_000 });
 
     // Open the dropdown
@@ -46,7 +46,7 @@ test.describe('Language Toggle (i18n)', () => {
     await page.waitForLoadState('networkidle');
 
     const initialText = await page.locator('nav').textContent();
-    const langTrigger = page.locator('nav button', { hasText: /🇺🇸|🇲🇽|🇧🇷/ }).first();
+    const langTrigger = page.locator('aside button', { hasText: /🇺🇸|🇲🇽|🇧🇷/ }).first();
     await expect(langTrigger).toBeVisible({ timeout: 5_000 });
 
     // Determine current language and the cycle order
