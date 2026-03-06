@@ -1,5 +1,5 @@
 {
-  "name": "@mana88/shared",
+  "name": "@terraia/shared",
   "version": "1.0.0",
   "type": "module",
   "main": "src/index.js",
