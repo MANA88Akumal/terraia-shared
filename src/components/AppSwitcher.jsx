@@ -2,19 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import { themeColors } from '../theme/tokens.js'
 import { icons } from './icons.jsx'
 
-function getAppDomain() {
-  const hostname = window.location.hostname
-  if (hostname.endsWith('.terraia.io') || hostname === 'terraia.io') return 'terraia.io'
-  return 'manaakumal.com'
-}
-
-const domain = getAppDomain()
 const APPS = [
-  { id: 'accounting', name: 'Accounting', url: `https://accounting.${domain}`, icon: icons.appAccounting },
-  { id: 'cms', name: 'Client Management', url: `https://cms.${domain}`, icon: icons.appCms },
-  { id: 'investors', name: 'Investor Portal', url: `https://investors.${domain}`, icon: icons.appInvestors },
-  { id: 'vault', name: 'Document Vault', url: `https://vault.${domain}`, icon: icons.appVault },
-  { id: 'broker-portal', name: 'Broker Portal', url: `https://brokers.${domain}`, icon: icons.appBroker },
+  { id: 'accounting', name: 'Accounting', url: 'https://accounting.terraia.io', icon: icons.appAccounting },
+  { id: 'cms', name: 'Client Management', url: 'https://cms.terraia.io', icon: icons.appCms },
+  { id: 'investors', name: 'Investor Portal', url: 'https://investors.terraia.io', icon: icons.appInvestors },
+  { id: 'vault', name: 'Document Vault', url: 'https://vault.terraia.io', icon: icons.appVault },
+  { id: 'broker-portal', name: 'Broker Portal', url: 'https://brokers.terraia.io', icon: icons.appBroker },
 ]
 
 /**

@@ -28,15 +28,7 @@ export function getSupabaseClient(anonKey) {
 
 // Cookie helpers for cross-domain session sharing
 const COOKIE_NAME = 'mana88_session'
-
-function getCookieDomain() {
-  const hostname = window.location.hostname
-  if (hostname.endsWith('.terraia.io') || hostname === 'terraia.io') return '.terraia.io'
-  if (hostname.endsWith('.manaakumal.com') || hostname === 'manaakumal.com') return '.manaakumal.com'
-  return '' // localhost / dev
-}
-
-const COOKIE_DOMAIN = getCookieDomain()
+const COOKIE_DOMAIN = '.terraia.io'
 
 export function setSharedAuthCookie(session) {
   if (!session) return
