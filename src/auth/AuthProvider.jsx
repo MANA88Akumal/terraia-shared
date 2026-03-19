@@ -48,14 +48,19 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
       .eq('id', userId)
       .single()
 
-    // Get role from user_roles (multi-tenant)
-    const { data: roleData } = await supabase
+    // Get all active roles from user_roles (multi-tenant / multi-project)
+    const { data: allRoles } = await supabase
       .from('user_roles')
       .select('role, app_access, is_active, tenant_id')
       .eq('user_id', userId)
       .eq('is_active', true)
-      .limit(1)
-      .single()
+
+    // Determine the active role: prefer the one matching JWT current_org_id
+    const { data: { session } } = await supabase.auth.getSession()
+    const currentOrgId = session?.user?.user_metadata?.current_org_id
+    const roleData = allRoles?.find(r => r.tenant_id === currentOrgId)
+      || allRoles?.[0]
+      || null
 
     // Merge: prefer user_roles.role if available, fall back to profiles.role
     const merged = {
@@ -64,6 +69,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
       role: roleData?.role || profileData?.role || 'viewer',
       app_access: roleData?.app_access || [],
       tenant_id: roleData?.tenant_id || null,
+      allRoles: allRoles || [],
       approved: profileData?.approved !== false, // default true if no profile
     }
 

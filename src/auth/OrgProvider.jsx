@@ -75,12 +75,26 @@ export function OrgProvider({ children }) {
     return () => { cancelled = true }
   }, [user?.id])
 
-  function switchOrg(orgId) {
+  async function switchOrg(orgId) {
     const match = allOrgs.find(o => o.id === orgId)
     if (match) {
       setOrg(match)
       setUserRole(match.role)
       localStorage.setItem(STORAGE_KEY, orgId)
+
+      // Persist to JWT so RLS picks it up via get_current_tenant_id()
+      try {
+        const { getSupabaseClient } = await import('./supabase.js')
+        const supabase = getSupabaseClient()
+        const { error } = await supabase.auth.updateUser({
+          data: { current_org_id: orgId }
+        })
+        if (!error) {
+          await supabase.auth.refreshSession()
+        }
+      } catch {
+        // Non-critical — localStorage fallback still works for UI
+      }
     }
   }
 
