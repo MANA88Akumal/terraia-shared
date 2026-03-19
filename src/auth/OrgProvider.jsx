@@ -83,13 +83,17 @@ export function OrgProvider({ children }) {
 
       // Persist to JWT so RLS picks it up via get_current_tenant_id()
       try {
-        const { getSupabaseClient } = await import('./supabase.js')
+        const { getSupabaseClient, setSharedAuthCookie } = await import('./supabase.js')
         const supabase = getSupabaseClient()
         const { error } = await supabase.auth.updateUser({
           data: { current_org_id: orgId }
         })
         if (!error) {
-          await supabase.auth.refreshSession()
+          const { data } = await supabase.auth.refreshSession()
+          // Update shared cookie so other apps pick up the new JWT
+          if (data?.session) {
+            setSharedAuthCookie(data.session)
+          }
         }
       } catch {
         // Non-critical — localStorage fallback still works for UI

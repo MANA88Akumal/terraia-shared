@@ -149,13 +149,16 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
         const userData = { id: payload.sub, email: payload.email }
         setUser(userData)
 
-        // Establish Supabase session from cookie
+        // Establish Supabase session from cookie, then refresh to get latest metadata
         if (supabase && cookieSession.refresh_token) {
-          const { data } = await supabase.auth.setSession({
+          await supabase.auth.setSession({
             access_token: cookieSession.access_token,
             refresh_token: cookieSession.refresh_token,
           })
-          if (data?.session) {
+          // Refresh to pick up latest user_metadata (e.g. current_org_id from org switch)
+          const { data: refreshed } = await supabase.auth.refreshSession()
+          if (refreshed?.session) {
+            setSharedAuthCookie(refreshed.session)
             const prof = await fetchProfile(supabase, payload.sub)
             setProfile(prof)
           } else {
