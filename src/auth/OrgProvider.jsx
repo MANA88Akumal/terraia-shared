@@ -38,7 +38,6 @@ export function OrgProvider({ children }) {
           .from('organization_members')
           .select('org_id, role, organizations(id, name, slug, plan, plan_status, settings)')
           .eq('user_id', user.id)
-          .eq('is_active', true)
 
         if (error || !data || cancelled) {
           setLoading(false)
