@@ -129,12 +129,17 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
       if (supabase) {
         const { data: { session } } = await supabase.auth.getSession()
         if (session) {
-          const userData = { id: session.user.id, email: session.user.email }
+          // Refresh to pick up latest user_metadata (e.g. current_org_id from org switch on another app)
+          const { data: refreshed } = await supabase.auth.refreshSession()
+          const activeSession = refreshed?.session || session
+          if (refreshed?.session) setSharedAuthCookie(refreshed.session)
+
+          const userData = { id: activeSession.user.id, email: activeSession.user.email }
           setUser(userData)
-          const prof = await fetchProfile(supabase, session.user.id)
+          const prof = await fetchProfile(supabase, activeSession.user.id)
           setProfile(prof)
           setLoading(false)
-          onAuthenticated?.({ user: userData, token: session.access_token })
+          onAuthenticated?.({ user: userData, token: activeSession.access_token })
           return
         }
       }
