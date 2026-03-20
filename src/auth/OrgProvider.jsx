@@ -125,6 +125,7 @@ export function OrgProvider({ children }) {
     <OrgContext.Provider value={{
       org,
       orgId: org?.id || null,
+      tenantId: profile?.tenant_id || org?.id || null,
       orgName: org?.name || null,
       orgSlug: org?.slug || null,
       userRole,
