@@ -102,7 +102,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
           const payload = parseJwtPayload(access_token)
           if (!payload) { redirectToLogin(); return }
 
-          const userData = { id: payload.sub, email: payload.email }
+          const userData = { id: payload.sub, email: payload.email, user_metadata: payload.user_metadata }
           setUser(userData)
 
           // Store in cookie
@@ -134,7 +134,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
           const activeSession = refreshed?.session || session
           if (refreshed?.session) setSharedAuthCookie(refreshed.session)
 
-          const userData = { id: activeSession.user.id, email: activeSession.user.email }
+          const userData = { id: activeSession.user.id, email: activeSession.user.email, user_metadata: activeSession.user.user_metadata }
           setUser(userData)
           const prof = await fetchProfile(supabase, activeSession.user.id)
           setProfile(prof)
@@ -151,7 +151,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
         const payload = parseJwtPayload(cookieSession.access_token)
         if (!payload) { redirectToLogin(); return }
 
-        const userData = { id: payload.sub, email: payload.email }
+        const userData = { id: payload.sub, email: payload.email, user_metadata: payload.user_metadata }
         setUser(userData)
 
         // Establish Supabase session from cookie, then refresh to get latest metadata
@@ -192,7 +192,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        setUser({ id: session.user.id, email: session.user.email })
+        setUser({ id: session.user.id, email: session.user.email, user_metadata: session.user.user_metadata })
         fetchProfile(supabase, session.user.id).then(setProfile)
       } else if (event === 'SIGNED_OUT') {
         clearSharedAuthCookie()
