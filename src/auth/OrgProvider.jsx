@@ -61,12 +61,20 @@ export function OrgProvider({ children }) {
           // Multi-org: check JWT current_org_id first (cross-domain), then localStorage
           const jwtOrgId = user?.user_metadata?.current_org_id
           const lastOrgId = localStorage.getItem(STORAGE_KEY)
+
+          // If JWT org differs from localStorage, the user switched orgs on another app.
+          // Force reload so all data-fetching components re-initialize with the new session.
+          if (jwtOrgId && lastOrgId && jwtOrgId !== lastOrgId) {
+            localStorage.setItem(STORAGE_KEY, jwtOrgId)
+            window.location.reload()
+            return
+          }
+
           const match = memberships.find(m => m.org_id === jwtOrgId)
             || memberships.find(m => m.org_id === lastOrgId)
             || memberships[0]
           setOrg({ ...match.organizations, role: match.role })
           setUserRole(match.role)
-          // Sync localStorage to match JWT selection
           if (match.org_id) localStorage.setItem(STORAGE_KEY, match.org_id)
         }
       } catch {
