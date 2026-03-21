@@ -128,6 +128,7 @@ export function OrgProvider({ children }) {
       tenantId: profile?.tenant_id || org?.id || null,
       orgName: org?.name || null,
       orgSlug: org?.slug || null,
+      orgSettings: org?.settings || {},
       userRole,
       allOrgs,
       switchOrg,
