@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { themeColors } from '../theme/tokens.js'
 import { Sidebar } from './Sidebar.jsx'
@@ -50,8 +51,10 @@ export function AppShell({
   children,
   t,
 }) {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   return (
-    <div className="h-screen flex overflow-hidden" style={{ background: themeColors.bg }}>
+    <div className="h-[100dvh] flex overflow-hidden" style={{ background: themeColors.bg }}>
       <Sidebar
         appSubtitle={appSubtitle}
         navSections={navSections}
@@ -61,17 +64,20 @@ export function AppShell({
         onSignOut={onSignOut}
         footerSlot={sidebarFooterSlot}
         t={t}
+        mobileOpen={mobileOpen}
+        onMobileClose={() => setMobileOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopBar
           appId={appId}
           appAccess={appAccess}
           rightSlot={topBarRightSlot}
+          onMenuToggle={() => setMobileOpen(!mobileOpen)}
         />
 
         <main className="flex-1 overflow-auto" style={{ background: themeColors.bg }}>
-          <div className="max-w-7xl mx-auto p-6">
+          <div className="max-w-7xl mx-auto px-3 py-4 sm:px-4 sm:py-5 md:p-6">
             {children || <Outlet />}
           </div>
         </main>

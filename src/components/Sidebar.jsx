@@ -7,17 +7,23 @@ import { LanguageToggle } from './LanguageToggle.jsx'
 import { AccountMenu } from './AccountMenu.jsx'
 
 /**
- * Collapsible sidebar — 220px open / 60px closed.
- *
- * @param {object} props
- * @param {string} props.appSubtitle - e.g. "Contabilidad", "Client Management"
- * @param {Array<{key:string, heading?:string, items:Array<{to:string, label:string, icon:JSX.Element, badge?:number}>}>} props.navSections
- * @param {object} [props.notification] - { notifications, unreadCount, onMarkAllRead, onClickNotification, label }
- * @param {object} [props.i18n] - { locale, onToggle }
- * @param {string} [props.userEmail]
- * @param {function} [props.onSignOut]
- * @param {React.ReactNode} [props.footerSlot] - Optional slot (e.g. CurrencyToggle)
+ * Responsive collapsible sidebar.
+ * - Desktop: 220px open / 60px closed (always visible)
+ * - Mobile (<768px): hidden by default, slides in as overlay when toggled
  */
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < breakpoint : false
+  )
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
+    const handler = (e) => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [breakpoint])
+  return isMobile
+}
+
 export function Sidebar({
   appSubtitle,
   navSections,
@@ -27,10 +33,18 @@ export function Sidebar({
   onSignOut,
   footerSlot,
   t,
+  mobileOpen,
+  onMobileClose,
 }) {
+  const isMobile = useIsMobile()
   const [open, setOpen] = useState(true)
   const [collapsed, setCollapsed] = useState({})
   const location = useLocation()
+
+  // Close mobile sidebar on navigation
+  useEffect(() => {
+    if (onMobileClose) onMobileClose()
+  }, [location.pathname])
 
   // Auto-expand sections containing active route
   useEffect(() => {
@@ -48,14 +62,25 @@ export function Sidebar({
   }, [])
 
   return (
-    <aside
-      className="flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out"
-      style={{
-        width: open ? 220 : 60,
-        background: palette.black,
-        borderRight: '1px solid rgba(206,158,98,0.08)',
-      }}
-    >
+    <>
+      {/* Mobile overlay backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={onMobileClose}
+        />
+      )}
+      <aside
+        className={`flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out
+          ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+          fixed inset-y-0 left-0 z-50
+          md:relative md:translate-x-0 md:z-auto`}
+        style={{
+          width: isMobile ? 260 : (open ? 220 : 60),
+          background: palette.black,
+          borderRight: '1px solid rgba(206,158,98,0.08)',
+        }}
+      >
       {/* Logo */}
       <div className="flex items-center justify-center" style={{ height: 56, borderBottom: '1px solid rgba(206,158,98,0.1)' }}>
         <img src={LOGO_URL} alt="TerraIA" style={{ height: open ? '2rem' : '1.5rem', opacity: 0.9 }} />
@@ -162,10 +187,10 @@ export function Sidebar({
           />
         )}
 
-        {/* Collapse toggle */}
+        {/* Collapse toggle — desktop only */}
         <button
           onClick={() => setOpen(!open)}
-          className="w-full flex items-center rounded-lg transition-all duration-150 border-none cursor-pointer"
+          className="w-full items-center rounded-lg transition-all duration-150 border-none cursor-pointer hidden md:flex"
           style={{
             gap: open ? 10 : 0,
             padding: open ? '7px 10px' : '7px 0',
@@ -199,5 +224,6 @@ export function Sidebar({
         <AccountMenu email={userEmail} onSignOut={onSignOut} sidebarOpen={open} t={t} />
       </div>
     </aside>
+    </>
   )
 }
