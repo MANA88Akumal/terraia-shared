@@ -54,7 +54,7 @@ export function AppShell({
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className="h-[100dvh] flex overflow-hidden" style={{ background: themeColors.bg }}>
+    <div className="h-screen flex overflow-hidden" style={{ background: themeColors.bg }}>
       <Sidebar
         appSubtitle={appSubtitle}
         navSections={navSections}
