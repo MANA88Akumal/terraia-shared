@@ -62,21 +62,6 @@ export function OrgProvider({ children }) {
           const jwtOrgId = user?.user_metadata?.current_org_id
           const lastOrgId = localStorage.getItem(STORAGE_KEY)
 
-          // If JWT org differs from localStorage, the user switched orgs on another app.
-          // Clear Supabase session cache and reload so the app re-initializes from the
-          // shared cookie with the correct org's token.
-          if (jwtOrgId && lastOrgId && jwtOrgId !== lastOrgId) {
-            localStorage.setItem(STORAGE_KEY, jwtOrgId)
-            // Clear Supabase's cached session so it falls through to cookie on reload
-            for (const key of Object.keys(localStorage)) {
-              if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
-                localStorage.removeItem(key)
-              }
-            }
-            window.location.reload()
-            return
-          }
-
           const match = memberships.find(m => m.org_id === jwtOrgId)
             || memberships.find(m => m.org_id === lastOrgId)
             || memberships[0]
