@@ -15,6 +15,7 @@ const APPS = [
   { id: 'investors', name: 'Investor Portal', url: `https://investors.${domain}`, icon: icons.appInvestors },
   { id: 'vault', name: 'Document Vault', url: `https://vault.${domain}`, icon: icons.appVault },
   { id: 'broker-portal', name: 'Broker Portal', url: `https://brokers.${domain}`, icon: icons.appBroker },
+  { id: 'construction', name: 'Construction', url: `https://construction.${domain}`, icon: icons.appConstruction || icons.dashboard },
 ]
 
 /**
