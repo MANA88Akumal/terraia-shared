@@ -98,7 +98,11 @@ CREATE POLICY "referrals_update_own" ON client_referrals FOR UPDATE USING (refer
 CREATE POLICY "vault_client_read" ON client_vault_documents FOR SELECT
   USING (
     client_user_id = auth.uid() OR
-    case_id IN (SELECT id FROM cases WHERE buyer_email = (SELECT email FROM auth.users WHERE id = auth.uid()))
+    case_id IN (
+      SELECT c.id FROM cases c
+      JOIN clients cl ON c.client_id = cl.id
+      WHERE cl.email = (SELECT email FROM auth.users WHERE id = auth.uid())
+    )
   );
 CREATE POLICY "vault_insert_admin" ON client_vault_documents FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
