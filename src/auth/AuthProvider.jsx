@@ -33,7 +33,15 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const redirectToLogin = useCallback(() => {
+  const redirectToLogin = useCallback((reason) => {
+    const debug = new URLSearchParams(window.location.search).get('debug') === '1'
+    // eslint-disable-next-line no-console
+    console.warn('[AuthProvider] redirecting to login:', reason || 'unknown')
+    if (debug) {
+      // eslint-disable-next-line no-alert
+      alert(`[AuthProvider] Would redirect to login.\nReason: ${reason || 'unknown'}\nRemove ?debug=1 to allow redirect.`)
+      return
+    }
     clearSharedAuthCookie()
     const returnUrl = encodeURIComponent(window.location.href)
     window.location.href = `${LOGIN_URL}?returnTo=${returnUrl}`
@@ -79,28 +87,33 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
   // Initial auth check
   useEffect(() => {
     const init = async () => {
+      const log = (...args) => console.log('[AuthProvider]', ...args)
       let supabase
       try {
         supabase = getSupabaseClient()
-      } catch {
-        // No anon key — fall back to JWT-only mode
+        log('supabase client ok')
+      } catch (e) {
+        log('supabase client FAILED:', e?.message)
         supabase = null
       }
 
       const hash = window.location.hash
       const cookieSession = getSharedAuthCookie()
+      log('init', { hasHash: !!hash, hasCookie: !!cookieSession, hostname: window.location.hostname })
 
+      const log2 = (...args) => console.log('[AuthProvider]', ...args)
       // 1. Check URL hash tokens (from login portal redirect)
       if (hash && hash.includes('access_token')) {
+        log2('step 1: hash contains access_token')
         const params = new URLSearchParams(hash.substring(1))
         const access_token = params.get('access_token')
         const refresh_token = params.get('refresh_token')
 
         if (access_token) {
-          if (isTokenExpired(access_token)) { redirectToLogin(); return }
+          if (isTokenExpired(access_token)) { redirectToLogin('token check failed'); return }
 
           const payload = parseJwtPayload(access_token)
-          if (!payload) { redirectToLogin(); return }
+          if (!payload) { redirectToLogin('token check failed'); return }
 
           const userData = { id: payload.sub, email: payload.email, user_metadata: payload.user_metadata }
           setUser(userData)
@@ -128,6 +141,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
       // 2. Check existing Supabase session
       if (supabase) {
         const { data: { session } } = await supabase.auth.getSession()
+        log2('step 2: supabase getSession →', session ? 'has session' : 'no session')
         if (session) {
           // Refresh to pick up latest user_metadata (e.g. current_org_id from org switch on another app)
           const { data: refreshed } = await supabase.auth.refreshSession()
@@ -145,11 +159,13 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
       }
 
       // 3. Check shared cookie
+      log2('step 3: cookieSession exists?', !!cookieSession?.access_token)
       if (cookieSession?.access_token) {
-        if (isTokenExpired(cookieSession.access_token)) { redirectToLogin(); return }
+        if (isTokenExpired(cookieSession.access_token)) { redirectToLogin('cookie token expired'); return }
 
         const payload = parseJwtPayload(cookieSession.access_token)
-        if (!payload) { redirectToLogin(); return }
+        if (!payload) { redirectToLogin('cookie jwt parse failed'); return }
+        log2('step 3: token valid, user:', payload.email)
 
         const userData = { id: payload.sub, email: payload.email, user_metadata: payload.user_metadata }
         setUser(userData)
@@ -179,7 +195,7 @@ export function AuthProvider({ appId, onAuthenticated, children }) {
       }
 
       // 4. No session — redirect to login
-      redirectToLogin()
+      redirectToLogin('no hash, no supabase session, no shared cookie')
     }
 
     init()
