@@ -2,7 +2,7 @@
 -- Stores per-month bank statement data (saldo inicial/final, deposits, withdrawals)
 -- for reconciliation and accurate trailing balance in reports
 
-CREATE TABLE IF NOT EXISTS accounting_bank_statements (
+CREATE TABLE IF NOT EXISTS accounting_bank_statement_balances (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   bank_account_id UUID REFERENCES accounting_bank_accounts(id) ON DELETE CASCADE,
   bank TEXT NOT NULL,
@@ -42,17 +42,17 @@ CREATE TABLE IF NOT EXISTS accounting_bank_statements (
 );
 
 CREATE INDEX IF NOT EXISTS idx_bank_statements_account_month
-  ON accounting_bank_statements(bank_account_id, period_month);
+  ON accounting_bank_statement_balances(bank_account_id, period_month);
 
-ALTER TABLE accounting_bank_statements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE accounting_bank_statement_balances ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "tenant_select" ON accounting_bank_statements FOR SELECT
+CREATE POLICY "tenant_select" ON accounting_bank_statement_balances FOR SELECT
   USING (org_id IN (SELECT get_user_org_ids(auth.uid())));
-CREATE POLICY "tenant_insert" ON accounting_bank_statements FOR INSERT
+CREATE POLICY "tenant_insert" ON accounting_bank_statement_balances FOR INSERT
   WITH CHECK (org_id IN (SELECT get_user_org_ids(auth.uid())));
-CREATE POLICY "tenant_update" ON accounting_bank_statements FOR UPDATE
+CREATE POLICY "tenant_update" ON accounting_bank_statement_balances FOR UPDATE
   USING (org_id IN (SELECT get_user_org_ids(auth.uid())));
-CREATE POLICY "tenant_delete" ON accounting_bank_statements FOR DELETE
+CREATE POLICY "tenant_delete" ON accounting_bank_statement_balances FOR DELETE
   USING (org_id IN (SELECT get_user_org_ids(auth.uid())));
 
 -- Seed Scotiabank 25601153483 statements from Jan-Mar 2026 PDFs
@@ -69,7 +69,7 @@ BEGIN
 
   IF v_account_id IS NOT NULL THEN
     -- January 2026
-    INSERT INTO accounting_bank_statements (
+    INSERT INTO accounting_bank_statement_balances (
       bank_account_id, bank, account_number, currency,
       period_start, period_end, period_month,
       opening_balance, total_deposits, total_withdrawals, total_fees, total_taxes, closing_balance,
@@ -88,7 +88,7 @@ BEGIN
       closing_balance = EXCLUDED.closing_balance;
 
     -- February 2026
-    INSERT INTO accounting_bank_statements (
+    INSERT INTO accounting_bank_statement_balances (
       bank_account_id, bank, account_number, currency,
       period_start, period_end, period_month,
       opening_balance, total_deposits, total_withdrawals, total_fees, total_taxes, closing_balance,
@@ -107,7 +107,7 @@ BEGIN
       closing_balance = EXCLUDED.closing_balance;
 
     -- March 2026
-    INSERT INTO accounting_bank_statements (
+    INSERT INTO accounting_bank_statement_balances (
       bank_account_id, bank, account_number, currency,
       period_start, period_end, period_month,
       opening_balance, total_deposits, total_withdrawals, total_fees, total_taxes, closing_balance,
