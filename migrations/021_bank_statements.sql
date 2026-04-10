@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS accounting_bank_statements (
   -- Statement period
   period_start DATE NOT NULL,
   period_end DATE NOT NULL,
-  period_month TEXT GENERATED ALWAYS AS (TO_CHAR(period_end, 'YYYY-MM')) STORED,
+  period_month TEXT NOT NULL,
 
   -- Balances (per bank statement)
   opening_balance NUMERIC NOT NULL DEFAULT 0,
@@ -71,12 +71,12 @@ BEGIN
     -- January 2026
     INSERT INTO accounting_bank_statements (
       bank_account_id, bank, account_number, currency,
-      period_start, period_end,
+      period_start, period_end, period_month,
       opening_balance, total_deposits, total_withdrawals, total_fees, total_taxes, closing_balance,
       tenant_id, org_id
     ) VALUES (
       v_account_id, 'Scotiabank', '25601153483', 'MXN',
-      '2026-01-02', '2026-01-30',
+      '2026-01-02', '2026-01-30', '2026-01',
       344816.49, 1341712.28, 1587275.27, 695.00, 111.20, 98447.30,
       v_tenant_id, v_org_id
     ) ON CONFLICT (bank_account_id, period_month) DO UPDATE SET
@@ -90,12 +90,12 @@ BEGIN
     -- February 2026
     INSERT INTO accounting_bank_statements (
       bank_account_id, bank, account_number, currency,
-      period_start, period_end,
+      period_start, period_end, period_month,
       opening_balance, total_deposits, total_withdrawals, total_fees, total_taxes, closing_balance,
       tenant_id, org_id
     ) VALUES (
       v_account_id, 'Scotiabank', '25601153483', 'MXN',
-      '2026-02-03', '2026-02-27',
+      '2026-02-03', '2026-02-27', '2026-02',
       98447.30, 1673976.95, 1530107.50, 680.00, 108.80, 241527.95,
       v_tenant_id, v_org_id
     ) ON CONFLICT (bank_account_id, period_month) DO UPDATE SET
@@ -109,12 +109,12 @@ BEGIN
     -- March 2026
     INSERT INTO accounting_bank_statements (
       bank_account_id, bank, account_number, currency,
-      period_start, period_end,
+      period_start, period_end, period_month,
       opening_balance, total_deposits, total_withdrawals, total_fees, total_taxes, closing_balance,
       tenant_id, org_id
     ) VALUES (
       v_account_id, 'Scotiabank', '25601153483', 'MXN',
-      '2026-03-02', '2026-03-31',
+      '2026-03-02', '2026-03-31', '2026-03',
       241527.95, 508890.67, 659588.18, 685.00, 109.60, 90035.84,
       v_tenant_id, v_org_id
     ) ON CONFLICT (bank_account_id, period_month) DO UPDATE SET
