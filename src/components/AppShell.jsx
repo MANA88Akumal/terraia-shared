@@ -48,6 +48,7 @@ export function AppShell({
   appAccess,
   sidebarFooterSlot,
   topBarRightSlot,
+  hideOrgSwitcher,
   children,
   t,
 }) {
@@ -73,6 +74,7 @@ export function AppShell({
           appId={appId}
           appAccess={appAccess}
           rightSlot={topBarRightSlot}
+          hideOrgSwitcher={hideOrgSwitcher}
           onMenuToggle={() => setMobileOpen(!mobileOpen)}
         />
 

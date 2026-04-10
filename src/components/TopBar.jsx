@@ -5,7 +5,7 @@ import { OrgSwitcher } from './OrgSwitcher.jsx'
 /**
  * Thin top bar (~44px) with hamburger menu (mobile), app switcher, and optional right-side content.
  */
-export function TopBar({ appId, appAccess, rightSlot, onMenuToggle }) {
+export function TopBar({ appId, appAccess, rightSlot, onMenuToggle, hideOrgSwitcher }) {
   return (
     <div
       className="flex items-center justify-between px-2 sm:px-4 border-b"
@@ -30,7 +30,7 @@ export function TopBar({ appId, appAccess, rightSlot, onMenuToggle }) {
           </svg>
         </button>
         <AppSwitcher currentAppId={appId} appAccess={appAccess} />
-        <OrgSwitcher />
+        {!hideOrgSwitcher && <OrgSwitcher />}
       </div>
       {rightSlot && (
         <div className="flex items-center gap-1 sm:gap-2">
