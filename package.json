@@ -5,7 +5,10 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
-    "./theme/tenant-vars.css": "./src/theme/tenant-vars.css"
+    "./package.json": "./package.json",
+    "./src/*": "./src/*",
+    "./theme/tenant-vars.css": "./src/theme/tenant-vars.css",
+    "./theme/theme-tokens.css": "./src/theme/theme-tokens.css"
   },
   "scripts": {
     "test:e2e": "npx playwright test --config=e2e/playwright.config.ts",
