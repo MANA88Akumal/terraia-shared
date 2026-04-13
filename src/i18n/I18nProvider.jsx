@@ -36,7 +36,9 @@ export function I18nProvider({ appTranslations, children }) {
     let str = langs[locale]?.[key] || langs.es[key] || key
     if (replacements) {
       for (const [k, v] of Object.entries(replacements)) {
+        // Support both {{key}} and {key} placeholder styles
         str = str.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), v)
+        str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), v)
       }
     }
     return str
