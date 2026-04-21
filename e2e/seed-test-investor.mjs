@@ -37,6 +37,12 @@ const TEST_EMAIL = 'john@manaakumal.com'
 const TEST_PASSWORD = 'freedom1234'
 const FULL_NAME = 'John Anderson'
 
+// Investment sizing — John contributed $125K into a $20M fund (0.625%)
+const INVESTOR_INVESTMENT_USD = 125_000
+const INVESTOR_INVESTMENT_MXN = 2_375_000
+const TOTAL_FUND_USD = 20_000_000
+const INVESTOR_PRO_RATA_PCT = (INVESTOR_INVESTMENT_USD / TOTAL_FUND_USD) * 100 // 0.625
+
 const SAMPLE_PDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -103,7 +109,7 @@ async function upsertMembership(userId) {
     org_id: MANA88_ORG_ID,
     role: 'investor',
     is_active: true,
-    app_access: ['client-portal', 'investors'],
+    app_access: ['client-portal'],
   })
   if (roleErr) throw roleErr
 
@@ -136,12 +142,12 @@ async function upsertInvestorProfile(userId) {
     email: TEST_EMAIL,
     company_name: 'Anderson Family Trust',
     phone: '+1 415 555 0123',
-    investment_amount_usd: 250000,
-    investment_amount_mxn: 4750000,
+    investment_amount_usd: INVESTOR_INVESTMENT_USD,
+    investment_amount_mxn: INVESTOR_INVESTMENT_MXN,
     investment_date: '2024-11-15',
     investment_class: 'B-1',
     distribution_start_month: '2025-04',
-    pro_rata_pct: 1.25,
+    pro_rata_pct: INVESTOR_PRO_RATA_PCT,
     signed_agreement_url: SAMPLE_PDF,
     signed_agreement_filename: 'MANA88-LP-Agreement-Anderson.pdf',
     agreement_signed_date: '2024-11-15',
@@ -176,55 +182,79 @@ async function upsertInvestorProfile(userId) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// 5. distributions — 24 months, 12 paid, 12 scheduled
+// 5. distributions — 24 months. Uses a realistic fund-level schedule and
+//    stores John's share = fund_total × INVESTOR_PRO_RATA_PCT per month.
 // ──────────────────────────────────────────────────────────────────────────
+
+// Fund-level monthly distribution schedule for MANA 88 — aligns with how
+// the developer would publish their investor calendar in the investor-portal.
+// Ramps up as lot sales close over the 24-month distribution window.
+const FUND_SCHEDULE_USD = [
+  // Apr-Sep 2025: early deposits coming in
+  75_000, 75_000, 85_000, 85_000, 95_000, 95_000,
+  // Oct 2025-Mar 2026: mid-cycle closings
+  180_000, 180_000, 200_000, 220_000, 220_000, 240_000,
+  // Apr-Sep 2026: strong closing velocity
+  320_000, 340_000, 360_000, 360_000, 380_000, 400_000,
+  // Oct 2026-Mar 2027: final phase + exit
+  500_000, 540_000, 580_000, 620_000, 680_000, 720_000,
+]
+
 async function seedDistributions(profileId) {
   console.log(`[5/6] platform_investor_distributions`)
   await admin.from('platform_investor_distributions').delete().eq('investor_profile_id', profileId)
 
-  // Start April 2025 through March 2027 = 24 months
-  // Today is 2026-04-21 — months before 2026-04 are paid, April onward is scheduled
+  const shareFraction = INVESTOR_PRO_RATA_PCT / 100
+
   const rows = []
-  let month = new Date(2025, 3, 1) // April 2025 (month index 3)
+  const startMonth = new Date(2025, 3, 1) // April 2025
   const today = new Date(2026, 3, 21) // sync with system date
-  for (let i = 0; i < 24; i++) {
+
+  for (let i = 0; i < FUND_SCHEDULE_USD.length; i++) {
+    const month = new Date(startMonth)
+    month.setMonth(month.getMonth() + i)
     const y = month.getFullYear()
     const m = month.getMonth() + 1
     const monthKey = `${y}-${String(m).padStart(2, '0')}`
 
-    const baseEstimate = 1800 + i * 30 // rising slightly over time
+    const fundTotal = FUND_SCHEDULE_USD[i]
+    const investorShare = Math.round(fundTotal * shareFraction * 100) / 100
+
     const isPast = month < new Date(today.getFullYear(), today.getMonth(), 1)
 
     if (isPast) {
-      // Paid: actual is within +/- 5% of estimate
-      const jitter = 0.95 + Math.random() * 0.1
+      const jitter = 0.96 + Math.random() * 0.08
       rows.push({
         investor_profile_id: profileId,
         org_id: MANA88_ORG_ID,
         month: monthKey,
-        estimated_amount_usd: baseEstimate,
-        actual_amount_usd: Math.round(baseEstimate * jitter * 100) / 100,
-        payment_date: `${monthKey}-05`, // paid on the 5th of each month
+        estimated_amount_usd: investorShare,
+        actual_amount_usd: Math.round(investorShare * jitter * 100) / 100,
+        payment_date: `${monthKey}-05`,
         payment_reference: `WIRE-${y}${String(m).padStart(2, '0')}-7432`,
         payment_method: 'wire',
         status: 'paid',
+        notes: `Fund-level distribution: $${fundTotal.toLocaleString()}. Investor share at ${INVESTOR_PRO_RATA_PCT.toFixed(4)}%.`,
       })
     } else {
       rows.push({
         investor_profile_id: profileId,
         org_id: MANA88_ORG_ID,
         month: monthKey,
-        estimated_amount_usd: baseEstimate,
+        estimated_amount_usd: investorShare,
         status: 'scheduled',
+        notes: `Fund-level distribution: $${fundTotal.toLocaleString()}. Investor share at ${INVESTOR_PRO_RATA_PCT.toFixed(4)}%.`,
       })
     }
-
-    month.setMonth(month.getMonth() + 1)
   }
 
   const { error } = await admin.from('platform_investor_distributions').insert(rows)
   if (error) throw error
-  console.log(`  ${rows.length} rows inserted (${rows.filter((r) => r.status === 'paid').length} paid, ${rows.filter((r) => r.status === 'scheduled').length} scheduled)`)
+  const paid = rows.filter((r) => r.status === 'paid').length
+  const scheduled = rows.filter((r) => r.status === 'scheduled').length
+  const totalShare = rows.reduce((s, r) => s + (Number(r.estimated_amount_usd) || 0), 0)
+  console.log(`  ${rows.length} rows inserted (${paid} paid, ${scheduled} scheduled)`)
+  console.log(`  Total investor share across 24 months: $${totalShare.toLocaleString()} USD`)
 }
 
 // ──────────────────────────────────────────────────────────────────────────
