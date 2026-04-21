@@ -18,6 +18,7 @@ const APPS = [
   { id: 'construction', name: 'Construction', url: `https://construction.${domain}`, icon: icons.appConstruction || icons.dashboard },
   { id: 'client-portal', name: 'Owner Portal', url: `https://clientes.${domain}`, icon: icons.appClient || icons.dashboard },
   { id: 'admin', name: 'Admin', url: `https://admin.${domain}`, icon: icons.appAdmin || icons.dashboard },
+  { id: 'esig', name: 'eSig', url: `https://esig.${domain}`, icon: icons.appEsig || icons.dashboard },
 ]
 
 /**
