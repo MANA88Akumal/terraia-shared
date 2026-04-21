@@ -282,6 +282,12 @@ export const icons = {
       <path d="M3 9.5L12 3l9 6.5V21a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1V9.5z" />
     </svg>
   ),
+  appAdmin: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2l7 3v6c0 5-3.5 9-7 11-3.5-2-7-6-7-11V5l7-3z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  ),
 
   // App switcher grid icon
   appSwitcher: (
