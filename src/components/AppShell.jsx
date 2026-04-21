@@ -4,6 +4,7 @@ import { themeColors } from '../theme/tokens.js'
 import { Sidebar } from './Sidebar.jsx'
 import { TopBar } from './TopBar.jsx'
 import { ImpersonationBanner } from './ImpersonationBanner.jsx'
+import { DunningBanner } from './DunningBanner.jsx'
 
 /**
  * Unified application shell — wraps each TerraIA app with sidebar + top bar + content area.
@@ -58,6 +59,7 @@ export function AppShell({
   return (
     <div className="h-screen flex flex-col overflow-hidden" style={{ background: themeColors.bg }}>
       <ImpersonationBanner />
+      <DunningBanner />
       <div className="flex flex-1 overflow-hidden">
       <Sidebar
         appSubtitle={appSubtitle}
