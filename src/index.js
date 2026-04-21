@@ -25,6 +25,12 @@ export {
   isTokenExpired,
   parseJwtPayload,
 } from './auth/supabase.js'
+export {
+  startImpersonation,
+  stopImpersonation,
+  getImpersonationState,
+} from './auth/impersonation.js'
+export { ImpersonationBanner } from './components/ImpersonationBanner.jsx'
 
 // i18n
 export { I18nProvider, I18nContext } from './i18n/I18nProvider.jsx'

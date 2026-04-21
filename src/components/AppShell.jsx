@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { themeColors } from '../theme/tokens.js'
 import { Sidebar } from './Sidebar.jsx'
 import { TopBar } from './TopBar.jsx'
+import { ImpersonationBanner } from './ImpersonationBanner.jsx'
 
 /**
  * Unified application shell — wraps each TerraIA app with sidebar + top bar + content area.
@@ -55,7 +56,9 @@ export function AppShell({
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className="h-screen flex overflow-hidden" style={{ background: themeColors.bg }}>
+    <div className="h-screen flex flex-col overflow-hidden" style={{ background: themeColors.bg }}>
+      <ImpersonationBanner />
+      <div className="flex flex-1 overflow-hidden">
       <Sidebar
         appSubtitle={appSubtitle}
         navSections={navSections}
@@ -83,6 +86,7 @@ export function AppShell({
             {children || <Outlet />}
           </div>
         </main>
+      </div>
       </div>
     </div>
   )
