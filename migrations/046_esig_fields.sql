@@ -37,9 +37,9 @@ CREATE POLICY esig_fields_select ON esig_fields FOR SELECT
       SELECT 1 FROM esig_documents d
       WHERE d.id = esig_fields.document_id
         AND (
-          is_platform_admin()
-          OR d.tenant_id = ANY (caller_admin_tenant_ids())
-          OR user_is_in_tenants(ARRAY[d.tenant_id])
+          public.is_platform_admin()
+          OR d.tenant_id IN (SELECT public.caller_admin_tenant_ids())
+          OR public.user_is_in_tenants(auth.uid(), ARRAY[d.tenant_id])
         )
     )
   );
@@ -55,9 +55,9 @@ CREATE POLICY esig_fields_write ON esig_fields FOR ALL
       WHERE d.id = esig_fields.document_id
         AND d.status = 'draft'
         AND (
-          is_platform_admin()
-          OR d.tenant_id = ANY (caller_admin_tenant_ids())
-          OR user_is_in_tenants(ARRAY[d.tenant_id])
+          public.is_platform_admin()
+          OR d.tenant_id IN (SELECT public.caller_admin_tenant_ids())
+          OR public.user_is_in_tenants(auth.uid(), ARRAY[d.tenant_id])
         )
     )
   );
